@@ -1,0 +1,85 @@
+import { useEffect, useState } from "react";
+
+export default function BookingHistory() {
+  const [bookings, setBookings] = useState([]);
+
+  const currentUser = localStorage.getItem("currentUser");
+
+  // 🔐 Protect page properly inside useEffect-safe flow
+  useEffect(() => {
+    if (!currentUser) return;
+
+    loadBookings();
+  }, [currentUser]);
+
+  const loadBookings = () => {
+    const data = JSON.parse(localStorage.getItem("bookings")) || [];
+
+    const userBookings = data.filter((b) => b.user === currentUser);
+
+    setBookings(userBookings);
+  };
+
+  const handleDelete = (index) => {
+    const all = JSON.parse(localStorage.getItem("bookings")) || [];
+
+    // get ONLY current user bookings
+    const userBookings = all.filter((b) => b.user === currentUser);
+
+    // remove selected one
+    userBookings.splice(index, 1);
+
+    // keep other users’ bookings untouched
+    const others = all.filter((b) => b.user !== currentUser);
+
+    const updated = [...others, ...userBookings];
+
+    localStorage.setItem("bookings", JSON.stringify(updated));
+
+    loadBookings();
+  };
+
+  // 🔐 if not logged in
+  if (!currentUser) {
+    return (
+      <div className="page">
+        <h2>Please login to view booking history</h2>
+      </div>
+    );
+  }
+
+  return (
+    <div className="page">
+      <h1>Booking History</h1>
+
+      {bookings.length === 0 ? (
+        <p>No bookings found</p>
+      ) : (
+        bookings.map((b, i) => (
+          <div key={i} className="bus-card">
+            <h3>{b.bus?.name}</h3>
+            <p>Route: {b.bus?.route}</p>
+            <p>Seat: {b.selectedSeat}</p>
+            <p>Name: {b.name}</p>
+            <p>Phone: {b.phone}</p>
+
+            <button
+              onClick={() => handleDelete(i)}
+              style={{
+                marginTop: "8px",
+                background: "#e74c3c",
+                color: "white",
+                border: "none",
+                padding: "6px 10px",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
