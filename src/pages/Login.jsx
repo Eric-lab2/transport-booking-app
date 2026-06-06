@@ -16,10 +16,27 @@ export default function Login() {
       return;
     }
 
+    const usernameRegex = /^[A-Za-z0-9]{4,}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+
+    if (!usernameRegex.test(username)) {
+      setError("Username must be at least 4 characters (letters/numbers only)");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      setError("Password must be at least 6 characters and include letters + numbers");
+      return;
+    }
+
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
+    const normalizedUsername = username.trim().toLowerCase();
+
     const foundUser = users.find(
-      (u) => u.username === username && u.password === password
+      (u) =>
+        u.username === normalizedUsername &&
+        u.password === password
     );
 
     if (!foundUser) {
@@ -27,11 +44,7 @@ export default function Login() {
       return;
     }
 
-    // ✅ FIX: normalize user format
-    localStorage.setItem(
-      "currentUser",
-      username.trim().toLowerCase()
-    );
+    localStorage.setItem("currentUser", normalizedUsername);
 
     setError("");
     navigate("/");
@@ -47,14 +60,14 @@ export default function Login() {
         <form onSubmit={handleLogin}>
           <input
             type="text"
-            placeholder="Username"
+            placeholder="Username (e.g. john123)"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
 
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Password (e.g. pass123)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -62,14 +75,9 @@ export default function Login() {
           <button type="submit">Login</button>
         </form>
 
-        <p style={{ marginTop: "10px" }}>
-          Don't have an account?{" "}
-          <span
-            style={{ color: "#e67e22", cursor: "pointer" }}
-            onClick={() => navigate("/register")}
-          >
-            Register here
-          </span>
+        <p style={{ fontSize: "13px", marginTop: "8px", opacity: 0.7 }}>
+          Username: letters + numbers only (min 4 chars) <br />
+          Password: must include letters + numbers (min 6 chars)
         </p>
       </div>
     </div>

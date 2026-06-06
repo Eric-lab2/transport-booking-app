@@ -6,44 +6,50 @@ export default function Registration() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
 
-    if (!username || !password || !confirmPassword) {
+    if (!username || !password) {
       setError("Please fill all fields");
-      setSuccess("");
       return;
     }
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      setSuccess("");
+    const usernameRegex = /^[A-Za-z0-9]{4,}$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+
+    if (!usernameRegex.test(username)) {
+      setError("Username must be at least 4 characters (letters/numbers only)");
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      setError("Password must be at least 6 characters and include letters + numbers");
       return;
     }
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    const userExists = users.some((u) => u.username === username);
+    const normalizedUsername = username.trim().toLowerCase();
 
-    if (userExists) {
-      setError("Username already exists");
-      setSuccess("");
+    if (users.find((u) => u.username === normalizedUsername)) {
+      setError("Username already taken");
       return;
     }
 
-    users.push({ username, password });
+    const newUser = {
+      username: normalizedUsername,
+      password,
+    };
+
+    users.push(newUser);
+
     localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", normalizedUsername);
 
     setError("");
-    setSuccess("Registration successful!");
-
-    setTimeout(() => {
-      navigate("/login");
-    }, 1200);
+    navigate("/");
   };
 
   return (
@@ -52,41 +58,28 @@ export default function Registration() {
         <h2>Register</h2>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
-        {success && <p style={{ color: "green" }}>{success}</p>}
 
         <form onSubmit={handleRegister}>
           <input
             type="text"
-            placeholder="Username"
+            placeholder="Username (e.g. john123)"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
 
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Password (e.g. pass123)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
           <button type="submit">Register</button>
         </form>
 
-        <p style={{ marginTop: "10px" }}>
-          Already have an account?{" "}
-          <span
-            style={{ color: "#e67e22", cursor: "pointer" }}
-            onClick={() => navigate("/login")}
-          >
-            Login here
-          </span>
+        <p style={{ fontSize: "13px", marginTop: "8px", opacity: 0.7 }}>
+          Username: letters + numbers only (min 4 chars) <br />
+          Password: must include letters + numbers (min 6 chars)
         </p>
       </div>
     </div>

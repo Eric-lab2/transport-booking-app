@@ -28,8 +28,8 @@ export default function Booking() {
     const existing = JSON.parse(localStorage.getItem("bookings")) || [];
 
     const seats = existing
-      .filter((b) => b.bus && b.bus.id === bus.id)
-      .map((b) => Number(b.selectedSeat)); // ✅ FIX
+      .filter((b) => b?.bus?.id === bus.id)
+      .map((b) => Number(b.selectedSeat));
 
     setBookedSeats(seats);
   }, [bus, currentUser, navigate]);
@@ -70,9 +70,18 @@ export default function Booking() {
       return;
     }
 
+    // 🔥 IMPORTANT FIX: create clean bus snapshot
+    const cleanBus = {
+      id: bus.id,
+      name: bus.name,
+      route: bus.route,
+      price: bus.price,
+      seats: bus.seats,
+    };
+
     const bookingData = {
       user: (currentUser || "").trim().toLowerCase(),
-      bus,
+      bus: cleanBus, // ✅ guaranteed structure
       selectedSeat,
       name: name.trim(),
       phone: phone.trim(),

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 export default function BookingHistory() {
   const [bookings, setBookings] = useState([]);
 
+  // ✅ normalize current user
   const currentUser = (localStorage.getItem("currentUser") || "")
     .trim()
     .toLowerCase();
@@ -15,8 +16,9 @@ export default function BookingHistory() {
   const loadBookings = () => {
     const data = JSON.parse(localStorage.getItem("bookings")) || [];
 
+    // ✅ filter safely
     const userBookings = data.filter(
-      (b) => (b.user || "").trim().toLowerCase() === currentUser
+      (b) => (b?.user || "").trim().toLowerCase() === currentUser
     );
 
     setBookings(userBookings);
@@ -26,13 +28,13 @@ export default function BookingHistory() {
     const all = JSON.parse(localStorage.getItem("bookings")) || [];
 
     const userBookings = all.filter(
-      (b) => (b.user || "").trim().toLowerCase() === currentUser
+      (b) => (b?.user || "").trim().toLowerCase() === currentUser
     );
 
     userBookings.splice(index, 1);
 
     const others = all.filter(
-      (b) => (b.user || "").trim().toLowerCase() !== currentUser
+      (b) => (b?.user || "").trim().toLowerCase() !== currentUser
     );
 
     const updated = [...others, ...userBookings];
@@ -59,11 +61,11 @@ export default function BookingHistory() {
       ) : (
         bookings.map((b, i) => (
           <div key={i} className="bus-card">
-            <h3>{b.bus?.name}</h3>
-            <p>Route: {b.bus?.route}</p>
-            <p>Seat: {b.selectedSeat}</p>
-            <p>Name: {b.name}</p>
-            <p>Phone: {b.phone}</p>
+            <h3>{b?.bus?.name || "Unknown Bus"}</h3>
+            <p>Route: {b?.bus?.route || "Unknown Route"}</p>
+            <p>Seat: {b?.selectedSeat || "N/A"}</p>
+            <p>Name: {b?.name || "N/A"}</p>
+            <p>Phone: {b?.phone || "N/A"}</p>
 
             <button
               onClick={() => handleDelete(i)}
