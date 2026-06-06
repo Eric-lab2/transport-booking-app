@@ -13,6 +13,8 @@ import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
