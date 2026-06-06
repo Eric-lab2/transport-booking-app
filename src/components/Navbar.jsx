@@ -34,59 +34,65 @@ export default function Navbar() {
 
         <Link
           to="/"
-          className={
-            currentPath === "/"
-              ? "active"
-              : ""
-          }
+          className={currentPath === "/" ? "active" : ""}
         >
           Home
         </Link>
 
         <Link
           to="/buses"
-          className={
-            currentPath === "/buses"
-              ? "active"
-              : ""
-          }
+          className={currentPath === "/buses" ? "active" : ""}
         >
           Buses
         </Link>
 
+        {/* About Page */}
+        <Link
+          to="/about"
+          className={currentPath === "/about" ? "active" : ""}
+        >
+          About
+        </Link>
+
+        {/* Contact Page */}
+        <Link
+          to="/contact"
+          className={currentPath === "/contact" ? "active" : ""}
+        >
+          Contact
+        </Link>
+
         {currentUser && (
-          <Link
-            to="/history"
-            className={
-              currentPath === "/history"
-                ? "active"
-                : ""
-            }
-          >
-            History
-          </Link>
+          <>
+            <Link
+              to="/history"
+              className={currentPath === "/history" ? "active" : ""}
+            >
+              History
+            </Link>
+
+            {/* Profile Page */}
+            <Link
+              to="/profile"
+              className={currentPath === "/profile" ? "active" : ""}
+            >
+              Profile
+            </Link>
+          </>
         )}
 
         {!currentUser && (
           <>
             <Link
               to="/register"
-              className={
-                currentPath === "/register"
-                  ? "active"
-                  : ""
-              }
+              className={currentPath === "/register" ? "active" : ""}
             >
               Register
             </Link>
 
             <Link
               to="/login"
-              className={
-                currentPath === "/login"
-                  ? "active"
-                  : ""
-              }
+              className={currentPath === "/login" ? "active" : ""}
             >
               Login
             </Link>
