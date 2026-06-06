@@ -342,7 +342,6 @@ button[type="submit"] {
 footer {
   height: 90px;
   background: linear-gradient(90deg, #001f4d, #00285f, #001f4d);
-
   color: white;
 
   display: flex;
@@ -353,8 +352,9 @@ footer {
   font-weight: 500;
 
   margin-top: auto;
-
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  text-align: center;
 }
 
 /* =========================
@@ -402,13 +402,13 @@ footer {
     width: 100%;
   }
 
-  /* ✅ FOOTER FIX (ONLY ADDITION) */
+  /* ✅ CLEANER FOOTER MOBILE FIX */
   footer {
-    text-align: center;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 15px 10px;
+    font-size: 1rem;
   }
 }
 

@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 export default function BookingHistory() {
   const [bookings, setBookings] = useState([]);
 
-  // ✅ normalize current user
   const currentUser = (localStorage.getItem("currentUser") || "")
     .trim()
     .toLowerCase();
@@ -16,7 +15,6 @@ export default function BookingHistory() {
   const loadBookings = () => {
     const data = JSON.parse(localStorage.getItem("bookings")) || [];
 
-    // ✅ filter safely
     const userBookings = data.filter(
       (b) => (b?.user || "").trim().toLowerCase() === currentUser
     );
@@ -27,21 +25,34 @@ export default function BookingHistory() {
   const handleDelete = (index) => {
     const all = JSON.parse(localStorage.getItem("bookings")) || [];
 
-    const userBookings = all.filter(
-      (b) => (b?.user || "").trim().toLowerCase() === currentUser
-    );
+    const userBookings = all
+      .map((b, i) => ({ ...b, originalIndex: i }))
+      .filter(
+        (b) => (b?.user || "").trim().toLowerCase() === currentUser
+      );
 
-    userBookings.splice(index, 1);
+    const target = userBookings[index];
 
-    const others = all.filter(
-      (b) => (b?.user || "").trim().toLowerCase() !== currentUser
-    );
+    if (!target) return;
 
-    const updated = [...others, ...userBookings];
+    const updated = all.filter((_, i) => i !== target.originalIndex);
 
     localStorage.setItem("bookings", JSON.stringify(updated));
 
     loadBookings();
+  };
+
+  // 🔥 DELETE ALL FUNCTION (THIS WAS MISSING)
+  const handleDeleteAll = () => {
+    const all = JSON.parse(localStorage.getItem("bookings")) || [];
+
+    const remaining = all.filter(
+      (b) => (b?.user || "").trim().toLowerCase() !== currentUser
+    );
+
+    localStorage.setItem("bookings", JSON.stringify(remaining));
+
+    setBookings([]);
   };
 
   if (!currentUser) {
@@ -55,6 +66,25 @@ export default function BookingHistory() {
   return (
     <div className="page">
       <h1>Booking History</h1>
+
+      {/* 🔥 DELETE ALL BUTTON (NOW ADDED) */}
+      {bookings.length > 0 && (
+        <button
+          onClick={handleDeleteAll}
+          style={{
+            marginBottom: "15px",
+            background: "#e74c3c",
+            color: "white",
+            border: "none",
+            padding: "10px 15px",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          Delete All Bookings
+        </button>
+      )}
 
       {bookings.length === 0 ? (
         <p>No bookings found</p>
