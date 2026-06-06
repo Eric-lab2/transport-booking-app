@@ -20,7 +20,7 @@ export default function About() {
             lineHeight: "1.8",
           }}
         >
-          Welcome to <strong>SwiftRide Transport Booking</strong>, a
+          Welcome to <strong>Transport Booking</strong>, a
           modern transport booking platform designed to make bus travel
           easier, safer, and more convenient for passengers.
         </p>
