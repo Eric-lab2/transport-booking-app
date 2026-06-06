@@ -29,7 +29,7 @@ export default function Booking() {
 
     const seats = existing
       .filter((b) => b.bus && b.bus.id === bus.id)
-      .map((b) => b.selectedSeat);
+      .map((b) => Number(b.selectedSeat)); // ✅ FIX
 
     setBookedSeats(seats);
   }, [bus, currentUser, navigate]);
@@ -42,15 +42,12 @@ export default function Booking() {
     );
   }
 
-  // 🔴 VALIDATION FUNCTIONS
   const isValidName = (value) => {
-    // must be first + last name only letters
     const regex = /^[A-Za-z]{2,}\s[A-Za-z]{2,}$/;
     return regex.test(value.trim());
   };
 
   const isValidNigerianNumber = (value) => {
-    // 11 digits, starts with 070/080/081/090/091
     const regex = /^(070|080|081|090|091)\d{8}$/;
     return regex.test(value.trim());
   };
@@ -73,10 +70,8 @@ export default function Booking() {
       return;
     }
 
-    const cleanUser = (currentUser || "").trim().toLowerCase();
-
     const bookingData = {
-      user: cleanUser,
+      user: (currentUser || "").trim().toLowerCase(),
       bus,
       selectedSeat,
       name: name.trim(),
@@ -85,6 +80,7 @@ export default function Booking() {
 
     const existing = JSON.parse(localStorage.getItem("bookings")) || [];
     existing.push(bookingData);
+
     localStorage.setItem("bookings", JSON.stringify(existing));
 
     navigate("/confirmation", { state: bookingData });

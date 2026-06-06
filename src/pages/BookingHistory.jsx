@@ -3,19 +3,21 @@ import { useEffect, useState } from "react";
 export default function BookingHistory() {
   const [bookings, setBookings] = useState([]);
 
-  const currentUser = localStorage.getItem("currentUser");
+  const currentUser = (localStorage.getItem("currentUser") || "")
+    .trim()
+    .toLowerCase();
 
-  // 🔐 Protect page properly inside useEffect-safe flow
   useEffect(() => {
     if (!currentUser) return;
-
     loadBookings();
   }, [currentUser]);
 
   const loadBookings = () => {
     const data = JSON.parse(localStorage.getItem("bookings")) || [];
 
-    const userBookings = data.filter((b) => b.user === currentUser);
+    const userBookings = data.filter(
+      (b) => (b.user || "").trim().toLowerCase() === currentUser
+    );
 
     setBookings(userBookings);
   };
@@ -23,14 +25,15 @@ export default function BookingHistory() {
   const handleDelete = (index) => {
     const all = JSON.parse(localStorage.getItem("bookings")) || [];
 
-    // get ONLY current user bookings
-    const userBookings = all.filter((b) => b.user === currentUser);
+    const userBookings = all.filter(
+      (b) => (b.user || "").trim().toLowerCase() === currentUser
+    );
 
-    // remove selected one
     userBookings.splice(index, 1);
 
-    // keep other users’ bookings untouched
-    const others = all.filter((b) => b.user !== currentUser);
+    const others = all.filter(
+      (b) => (b.user || "").trim().toLowerCase() !== currentUser
+    );
 
     const updated = [...others, ...userBookings];
 
@@ -39,7 +42,6 @@ export default function BookingHistory() {
     loadBookings();
   };
 
-  // 🔐 if not logged in
   if (!currentUser) {
     return (
       <div className="page">

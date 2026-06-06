@@ -27,7 +27,12 @@ export default function Login() {
       return;
     }
 
-    localStorage.setItem("currentUser", username);
+    // ✅ FIX: normalize user format
+    localStorage.setItem(
+      "currentUser",
+      username.trim().toLowerCase()
+    );
+
     setError("");
     navigate("/");
   };
