@@ -24,13 +24,15 @@ export default function Profile() {
   }
 
   return (
-    <div className="page">
-      <h1>Profile</h1>
+    <div className="page center-page">
+      <div style={{ width: "100%", textAlign: "center" }}>
+        <h1 style={{ marginBottom: "25px" }}>Profile</h1>
 
-      <div className="bus-card">
-        <p><strong>Username:</strong> {currentUser}</p>
-        <p><strong>Total Bookings:</strong> {bookings.length}</p>
-        <p><strong>Account Status:</strong> Active</p>
+        <div className="bus-card" style={{ maxWidth: "500px", margin: "0 auto" }}>
+          <p><strong>Username:</strong> {currentUser}</p>
+          <p><strong>Total Bookings:</strong> {bookings.length}</p>
+          <p><strong>Account Status:</strong> Active</p>
+        </div>
       </div>
     </div>
   );
